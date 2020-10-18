@@ -9,9 +9,7 @@ import CoreHaptics
 
 @available(iOS 13.0, *)
 @available(OSX 10.15, *)
-class Haptics {
-  
-  static let shared = Haptics()
+public class Haptics {
   
   private var hapticEngine: CHHapticEngine?
 
@@ -19,7 +17,7 @@ class Haptics {
     prepareHaptics()
   }
 
-  func prepareHaptics() {
+  private func prepareHaptics() {
     guard CHHapticEngine.capabilitiesForHardware().supportsHaptics else { return }
     
     do {
@@ -29,9 +27,12 @@ class Haptics {
       print("There was an error creating the engine: \(error.localizedDescription)")
     }
   }
-  
 
-  func complexSuccess() {
+  //MARK: - Public
+  
+  public static let shared = Haptics()
+  
+  public func complexSuccess() {
     
     // make sure that the device supports haptics
     guard CHHapticEngine.capabilitiesForHardware().supportsHaptics else { return }
