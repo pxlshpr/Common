@@ -7,6 +7,7 @@
 
 import CoreHaptics
 
+@available(iOS 13.0, *)
 @available(OSX 10.15, *)
 class Haptics {
   
