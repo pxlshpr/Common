@@ -2,6 +2,11 @@
 import SwiftUI
 import UIKit
 
+@objc protocol PreviousNextDelegate {
+  func previousButtonTapped(button: UIBarButtonItem)
+  func nextButtonTapped(button: UIBarButtonItem)
+}
+
 public struct KitTextField: UIViewRepresentable {
   let label: String
   let placeholder: String?
@@ -48,18 +53,19 @@ public struct KitTextField: UIViewRepresentable {
     self.onCommit = onCommit
   }
   
-  func getToolbar(for textField: UITextField, doneOnly: Bool = false) -> UIToolbar {
+  func getToolbar(for textField: UITextField, previousNextDelegate: PreviousNextDelegate, doneOnly: Bool = false) -> UIToolbar {
     let toolBar = UIToolbar(frame: CGRect(x: 0, y: 0, width: textField.frame.size.width, height: 44))
     let doneButton = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(textField.doneButtonTapped(button:)))
     
     let nextButton = UIBarButtonItem(image: UIImage(systemName: "chevron.down"),
                                      style: .plain,
                                      target: self,
-                                     action: #selector(textField.nextButtonTapped(button:)))
+                                     action: #selector(previousNextDelegate.nextButtonTapped(button:)))
+//                                    action: #selector(textField.nextButtonTapped(button:)))
     let previousButton = UIBarButtonItem(image: UIImage(systemName: "chevron.up"),
                                          style: .plain,
                                          target: self,
-                                         action: #selector(textField.prevButtonTapped(button:)))
+                                         action: #selector(previousNextDelegate.previousButtonTapped(button:)))
     
     nextButton.tag = textField.tag
     previousButton.tag = textField.tag
@@ -100,9 +106,9 @@ public struct KitTextField: UIViewRepresentable {
     textField.autocorrectionType = .no
     if let tag = tag {
       textField.tag = tag
-      textField.inputAccessoryView = getToolbar(for: textField)
+      textField.inputAccessoryView = getToolbar(for: textField, previousNextDelegate: context.coordinator)
     } else {
-      textField.inputAccessoryView = getToolbar(for: textField, doneOnly: true)
+      textField.inputAccessoryView = getToolbar(for: textField, previousNextDelegate: context.coordinator, doneOnly: true)
     }
     
     //    textField.inputAccessoryView = inputAccessoryView
@@ -150,7 +156,7 @@ public struct KitTextField: UIViewRepresentable {
     Coordinator(self)
   }
   
-  public final class Coordinator: NSObject, UITextFieldDelegate {
+  public final class Coordinator: NSObject, UITextFieldDelegate, PreviousNextDelegate {
     let control: KitTextField
     
     init(_ control: KitTextField) {
@@ -187,25 +193,27 @@ public struct KitTextField: UIViewRepresentable {
       //
       //      return true
       
-      //      guard var focusable = control.focusable?.wrappedValue else {
-      //        DispatchQueue.main.async {
-      //          textField.resignFirstResponder()
-      //        }
-      //        return true
-      //      }
-      //
-      //      for i in 0...(focusable.count - 1) {
-      //        focusable[i] = (textField.tag + 1 == i)
-      //      }
-      //
-      //      control.focusable?.wrappedValue = focusable
-      //
-      //      if textField.tag == focusable.count - 1 {
-      //        DispatchQueue.main.async {
-      //          textField.resignFirstResponder()
-      //        }
-      //
-      //      }
+      guard var focusable = control.focusable?.wrappedValue else {
+        DispatchQueue.main.async {
+          textField.resignFirstResponder()
+        }
+        return true
+      }
+
+//      for i in 0...(focusable.count - 1) {
+//        focusable[i] = (textField.tag + 1 == i)
+//      }
+//
+//      control.focusable?.wrappedValue = focusable
+//
+//      if textField.tag == focusable.count - 1 {
+//        DispatchQueue.main.async {
+//          textField.resignFirstResponder()
+//        }
+//
+//      }
+      
+      focusable = focusable.map({_ in false})
       
       return true
     }
@@ -218,6 +226,24 @@ public struct KitTextField: UIViewRepresentable {
       control.text = textField.text ?? ""
       textField.textAlignment = control.text.count == 0 ? .left : .right
     }
+    
+    @objc func previousButtonTapped(button: UIBarButtonItem) {
+      Haptics.shared.complexSuccess()
+      if var focusable = control.focusable?.wrappedValue {
+        for i in 0...(focusable.count - 1) {
+          focusable[i] = (button.tag - 1 == i)
+        }
+      }
+    }
+    
+    @objc func nextButtonTapped(button: UIBarButtonItem) {
+      Haptics.shared.complexSuccess()
+      if var focusable = control.focusable?.wrappedValue {
+        for i in 0...(focusable.count - 1) {
+          focusable[i] = (button.tag + 1 == i)
+        }
+      }
+    }
   }
 }
 
@@ -225,27 +251,13 @@ public struct KitTextField: UIViewRepresentable {
 extension  UITextField {
   
   @objc func doneButtonTapped(button: UIBarButtonItem) -> Void {
-    print("Done tapped on \(button.tag)")
     DispatchQueue.main.async {
       self.resignFirstResponder()
     }
+    Haptics.shared.complexSuccess()
 //    Backend.shared.resetFields()
-    Haptics.shared.complexSuccess()
-  }
-  
-  @objc func nextButtonTapped(button: UIBarButtonItem) -> Void {
-//    for i in 0...(Backend.shared.fieldFocus.count - 1) {
-//      Backend.shared.fieldFocus[i] = (button.tag + 1 == i)
-//    }
-    Haptics.shared.complexSuccess()
-  }
-  
-  @objc func prevButtonTapped(button: UIBarButtonItem) -> Void {
-//    for i in 0...(Backend.shared.fieldFocus.count - 1) {
-//      Backend.shared.fieldFocus[i] = (button.tag - 1 == i)
-//    }
-    Haptics.shared.complexSuccess()
   }
   
 }
+
 #endif
