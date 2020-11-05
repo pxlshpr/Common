@@ -17,7 +17,11 @@ public class Haptics {
     prepareHaptics()
   }
 
-  private func prepareHaptics() {
+  //MARK: - Public
+  
+  public static let shared = Haptics()
+
+  public func prepareHaptics() {
     guard CHHapticEngine.capabilitiesForHardware().supportsHaptics else { return }
     
     do {
@@ -27,10 +31,6 @@ public class Haptics {
       print("There was an error creating the engine: \(error.localizedDescription)")
     }
   }
-
-  //MARK: - Public
-  
-  public static let shared = Haptics()
   
   public func complexSuccess() {
     
