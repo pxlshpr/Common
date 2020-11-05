@@ -1,4 +1,4 @@
-#if !os(macOS)
+#if canImport(UIKit)
 import SwiftUI
 import UIKit
 
@@ -46,9 +46,9 @@ struct KitTextField: UIViewRepresentable {
       previousButton.isEnabled = false
     }
     
-    if tag == Backend.shared.fieldFocus.count - 1 {
-      nextButton.isEnabled = false
-    }
+//    if tag == Backend.shared.fieldFocus.count - 1 {
+//      nextButton.isEnabled = false
+//    }
     
     let spacer = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
     let items: [UIBarButtonItem]
@@ -206,26 +206,23 @@ extension  UITextField {
     DispatchQueue.main.async {
       self.resignFirstResponder()
     }
-    //    Backend.shared.focusedFieldTag = nil
-    Backend.shared.resetFields()
+//    Backend.shared.resetFields()
     Haptics.shared.complexSuccess()
   }
   
   @objc func nextButtonTapped(button: UIBarButtonItem) -> Void {
-    for i in 0...(Backend.shared.fieldFocus.count - 1) {
-      Backend.shared.fieldFocus[i] = (button.tag + 1 == i)
-    }
+//    for i in 0...(Backend.shared.fieldFocus.count - 1) {
+//      Backend.shared.fieldFocus[i] = (button.tag + 1 == i)
+//    }
     Haptics.shared.complexSuccess()
   }
   
   @objc func prevButtonTapped(button: UIBarButtonItem) -> Void {
-    for i in 0...(Backend.shared.fieldFocus.count - 1) {
-      Backend.shared.fieldFocus[i] = (button.tag - 1 == i)
-    }
+//    for i in 0...(Backend.shared.fieldFocus.count - 1) {
+//      Backend.shared.fieldFocus[i] = (button.tag - 1 == i)
+//    }
     Haptics.shared.complexSuccess()
   }
   
 }
-
 #endif
-
