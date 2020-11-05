@@ -94,18 +94,14 @@ public struct KitTextField: UIViewRepresentable {
 
       for (index, focused) in focusable.enumerated() {
         if uiView.tag == index && focused {
-          DispatchQueue.main.async {
-            uiView.becomeFirstResponder()
-          }
+          uiView.becomeFirstResponder()
           resignResponder = false
           break
         }
       }
 
       if resignResponder {
-        DispatchQueue.main.async {
-          uiView.resignFirstResponder()
-        }
+        uiView.resignFirstResponder()
       }
     }
   }
@@ -131,9 +127,7 @@ public struct KitTextField: UIViewRepresentable {
     
     public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
       guard var focusable = control.focusable?.wrappedValue else {
-        DispatchQueue.main.async {
-          textField.resignFirstResponder()
-        }
+        textField.resignFirstResponder()
         return true
       }
 
@@ -144,14 +138,11 @@ public struct KitTextField: UIViewRepresentable {
       control.focusable?.wrappedValue = focusable
 
       if textField.tag == focusable.count - 1 {
-        DispatchQueue.main.async {
-          textField.resignFirstResponder()
-        }
+        textField.resignFirstResponder()
       }
       
       Haptics.shared.complexSuccess()
 
-//      focusable = focusable.map({_ in false})
       return true
     }
     
@@ -170,9 +161,7 @@ public struct KitTextField: UIViewRepresentable {
 extension  UITextField {
   
   @objc func doneButtonTapped(button: UIBarButtonItem) -> Void {
-    DispatchQueue.main.async {
-      self.resignFirstResponder()
-    }
+    self.resignFirstResponder()
     Haptics.shared.complexSuccess()
   }
   
