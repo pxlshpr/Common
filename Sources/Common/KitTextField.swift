@@ -121,7 +121,7 @@ public struct KitTextField: UIViewRepresentable {
   }
   
   public final class Coordinator: NSObject, UITextFieldDelegate {
-    let control: KitTextField
+    public let control: KitTextField
     
     public init(_ control: KitTextField) {
       self.control = control
