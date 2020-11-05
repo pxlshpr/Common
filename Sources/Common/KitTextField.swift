@@ -2,7 +2,7 @@
 import SwiftUI
 import UIKit
 
-struct KitTextField: UIViewRepresentable {
+public struct KitTextField: UIViewRepresentable {
   let label: String
   let placeholder: String?
   @Binding var text: String
@@ -63,7 +63,7 @@ struct KitTextField: UIViewRepresentable {
     return toolBar
   }
   
-  func makeUIView(context: Context) -> UITextField {
+  public func makeUIView(context: Context) -> UITextField {
     let textField = UITextField(frame: .zero)
     textField.delegate = context.coordinator
     textField.placeholder = placeholder ?? label
@@ -90,7 +90,7 @@ struct KitTextField: UIViewRepresentable {
     return textField
   }
   
-  func updateUIView(_ uiView: UITextField, context: Context) {
+  public func updateUIView(_ uiView: UITextField, context: Context) {
     uiView.text = text
     uiView.isSecureTextEntry = isSecureTextEntry?.wrappedValue ?? false
     //    uiView.inputAccessoryView = inputAccessoryView
@@ -123,18 +123,18 @@ struct KitTextField: UIViewRepresentable {
     //    }
   }
   
-  func makeCoordinator() -> Coordinator {
+  public func makeCoordinator() -> Coordinator {
     Coordinator(self)
   }
   
-  final class Coordinator: NSObject, UITextFieldDelegate {
+  public final class Coordinator: NSObject, UITextFieldDelegate {
     let control: KitTextField
     
     init(_ control: KitTextField) {
       self.control = control
     }
     
-    func textFieldDidBeginEditing(_ textField: UITextField) {
+    public func textFieldDidBeginEditing(_ textField: UITextField) {
       //      guard var focusedFieldTag = control.focusedFieldTag?.wrappedValue else { return }
       //      focusedFieldTag = textField.tag
       //      control.focusedFieldTag?.wrappedValue = focusedFieldTag
@@ -148,7 +148,7 @@ struct KitTextField: UIViewRepresentable {
       //      control.focusable?.wrappedValue = focusable
     }
     
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+    public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
       //      guard var focusedFieldTag = control.focusedFieldTag?.wrappedValue, let numberOfFields = control.numberOfFields?.wrappedValue else {
       //        textField.resignFirstResponder()
       //        return true
@@ -187,11 +187,11 @@ struct KitTextField: UIViewRepresentable {
       return true
     }
     
-    func textFieldDidEndEditing(_ textField: UITextField) {
+    public func textFieldDidEndEditing(_ textField: UITextField) {
       control.onCommit?()
     }
     
-    @objc func textFieldDidChange(_ textField: UITextField) {
+    @objc public func textFieldDidChange(_ textField: UITextField) {
       control.text = textField.text ?? ""
       textField.textAlignment = control.text.count == 0 ? .left : .right
     }
