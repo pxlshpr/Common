@@ -3,20 +3,50 @@ import SwiftUI
 import UIKit
 
 public struct KitTextField: UIViewRepresentable {
+  let label: String
+  let placeholder: String?
+  @Binding var text: String
   
-  public let label: String
-  public let placeholder: String?
-  @Binding public var text: String
-  public var focusable: Binding<[Bool]>? = nil
-  public var isSecureTextEntry: Binding<Bool>? = nil
-  public var returnKeyType: UIReturnKeyType = .default
-  public var autocapitalizationType: UITextAutocapitalizationType = .none
-  public var keyboardType: UIKeyboardType = .default
-  public var textContentType: UITextContentType? = nil
-  public var tag: Int? = nil
-  public var inputAccessoryView: UIToolbar? = nil
-  public var onCommit: (() -> Void)? = nil
+  var focusable: Binding<[Bool]>? = nil
   
+  var isSecureTextEntry: Binding<Bool>? = nil
+  
+  var returnKeyType: UIReturnKeyType = .default
+  var autocapitalizationType: UITextAutocapitalizationType = .none
+  var keyboardType: UIKeyboardType = .default
+  var textContentType: UITextContentType? = nil
+  
+  var tag: Int? = nil
+  var inputAccessoryView: UIToolbar? = nil
+  
+  var onCommit: (() -> Void)? = nil
+  
+  public init(label: String,
+              placeholder: String? = nil,
+              text: Binding<String>,
+              focusable: Binding<[Bool]>? = nil,
+              isSecureTextEntry: Binding<Bool>? = nil,
+              returnKeyType: UIReturnKeyType = .default,
+              autocapitalizationType: UITextAutocapitalizationType = .none,
+              keyboardType: UIKeyboardType = .default,
+              textContentType: UITextContentType? = nil,
+              tag: Int? = nil,
+              inputAccessoryView: UIToolbar? = nil,
+              onCommit: (() -> Void)? = nil
+              ) {
+    self.label = label
+    self.placeholder = placeholder
+    self._text = text
+    self.focusable = focusable
+    self.isSecureTextEntry = isSecureTextEntry
+    self.returnKeyType = returnKeyType
+    self.autocapitalizationType  = autocapitalizationType
+    self.keyboardType = keyboardType
+    self.textContentType = textContentType
+    self.tag = tag
+    self.inputAccessoryView = inputAccessoryView
+    self.onCommit = onCommit
+  }
   
   func getToolbar(for textField: UITextField, doneOnly: Bool = false) -> UIToolbar {
     let toolBar = UIToolbar(frame: CGRect(x: 0, y: 0, width: textField.frame.size.width, height: 44))
@@ -121,9 +151,9 @@ public struct KitTextField: UIViewRepresentable {
   }
   
   public final class Coordinator: NSObject, UITextFieldDelegate {
-    public let control: KitTextField
+    let control: KitTextField
     
-    public init(_ control: KitTextField) {
+    init(_ control: KitTextField) {
       self.control = control
     }
     
